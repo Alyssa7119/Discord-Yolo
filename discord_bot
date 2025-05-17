@@ -1,0 +1,31 @@
+# Gestionar dependencias
+!pip install discord discord.py nest_asyncio imageai opencv-python numpy
+
+# Importar dependencias
+import discord
+from discord.ext import commands
+import nest_asyncio
+from imageai.Detection import ObjectDetection, VideoObjectDetection
+from PIL import Image
+import cv2
+import os
+
+# Gestionar Yolo
+!wget https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/yolov3.pt
+
+# Gestionar Modelo Yolo
+def configModel(modelPath):
+  detector = ObjectDetection()
+  detector.setModelTypeAsYOLOv3()
+  detector.setModelPath(modelPath)
+  detector.loadModel()
+  return detector
+
+def predictModel(detector, imgPath):
+  detections = detector.detectObjectsFromImage(
+    input_image=imgPath,
+    output_image_path=imgPath,
+    minimum_percentage_probability=65)
+  return detections
+
+    
