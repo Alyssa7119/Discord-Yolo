@@ -28,4 +28,42 @@ def predictModel(detector, imgPath):
     minimum_percentage_probability=65)
   return detections
 
+# Gestionar discord
+nest_asyncio.apply()
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix='$', intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f'We have logged in as {bot.user}')
+@bot.command()
+async def default(ctx):
+    await ctx.send(f'There is nothing to see. . .')
+
+@bot.command()
+async def holi(ctx):
+    await ctx.send(f'Olaaa!')
+
+
+
+@bot.command()
+async def upload(ctx):
+  files = ctx.message.attachments
+  img = files[0]
+  await img.save('img.jpg')
+
+  policia = configModel('/content/yolov3.pt')
+  analisis = predictModel(policia, '/content/img.jpg')
+
+  embed = discord.Embed(title = '¡Procesamiento exitoso!.')
+  await ctx.author.send(embed = embed)
+
+  with open('/content/img.jpg', 'rb') as f:
+    await ctx.author.send(file = discord.File(f))
+    await ctx.author.send(f'Reporte del analisis: \n {analisis}')
+
+bot.run("TOKEN")
     
